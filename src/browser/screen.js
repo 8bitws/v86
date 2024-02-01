@@ -371,12 +371,12 @@ function ScreenAdapter(screen_container, bus)
 
     function update_scale_text()
     {
-        elem_set_scale(text_screen, scale_x, scale_y, true);
+        //elem_set_scale(text_screen, scale_x, scale_y, true);
     }
 
     function update_scale_graphic()
     {
-        elem_set_scale(graphic_screen, scale_x * base_scale, scale_y * base_scale, false);
+        //elem_set_scale(graphic_screen, scale_x * base_scale, scale_y * base_scale, false);
     }
 
     function elem_set_scale(elem, scale_x, scale_y, use_scale)
