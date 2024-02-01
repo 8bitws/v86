@@ -57,7 +57,7 @@ function load_kernel(mem8, bzimage, initrd, cmdline)
     const setup_sects = bzimage8[LINUX_BOOT_HDR_SETUP_SECTS] || 4;
     const syssize = bzimage32[LINUX_BOOT_HDR_SYSSIZE >> 2] << 4;
 
-    const vidmode = bzimage16[LINUX_BOOT_HDR_VIDMODE >> 1];
+    const old_vidmode = bzimage16[LINUX_BOOT_HDR_VIDMODE >> 1];
 
     const checksum1 = bzimage16[LINUX_BOOT_HDR_BOOT_FLAG >> 1];
     if(checksum1 !== LINUX_BOOT_HDR_CHECKSUM1)
@@ -126,8 +126,15 @@ function load_kernel(mem8, bzimage, initrd, cmdline)
 
     bzimage16[LINUX_BOOT_HDR_HEAP_END_PTR >> 1] = heap_end_ptr;
 
-    // should parse the vga=... paramter from cmdline here, but we don't really care
-    bzimage16[LINUX_BOOT_HDR_VIDMODE >> 1] = 0xFFFF; // normal
+    // should parse the vga=... paramter from cmdline here
+    let vga_match = /\bvga=(0x[^ ]+)\b/.exec(cmdline);
+    let new_vidmode = 0xffff; // normal
+    if(vga_match)
+    {
+        new_vidmode = parseInt(vga_match[1], 16);
+    }
+    bzimage16[LINUX_BOOT_HDR_VIDMODE >> 1] = new_vidmode;
+    dbg_log("vidmode=" + h(new_vidmode));
 
     dbg_log("heap_end_ptr=" + h(heap_end_ptr));
 
