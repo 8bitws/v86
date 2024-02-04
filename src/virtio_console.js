@@ -21,13 +21,31 @@ const VIRTIO_CONSOLE_F_EMERG_WRITE    = 2;
  *
  * @param {CPU} cpu
  */
-function VirtioConsole(cpu, bus)
+function VirtioConsole(cpu, bus, options)
 {
     /** @const @type {BusConnector} */
     this.bus = bus;
     this.rows = 25;
     this.cols = 80;
     this.ports = 4;
+    this.consolePortEnable = 0b1111; // ports 0-3 are console ports by default
+
+    if (typeof options === 'object') {
+        if (typeof options.rows === 'number') {
+            this.rows = options.rows;
+        }
+        if (typeof options.cols === 'number') {
+            this.cols = options.cols;
+        }
+        if (typeof options.ports === 'number') {
+            this.ports = options.ports;
+        }
+        // ports that aren't console ports are used for binary data
+        // between the guest and the host
+        if (typeof options.consolePortEnable === 'number') {
+            this.consolePortEnable = options.consolePortEnable;
+        }
+    }
 
     let queues = [
         {
@@ -144,10 +162,11 @@ function VirtioConsole(cpu, bus)
                                 break;
                             case VIRTIO_CONSOLE_PORT_READY:
                                 this.Ack(queue_id, bufchain);
-                                this.SendEvent(port, VIRTIO_CONSOLE_CONSOLE_PORT, 1);
+                                if ((1 << port) & this.consolePortEnable) {
+                                    this.SendEvent(port, VIRTIO_CONSOLE_CONSOLE_PORT, 1);
+                                }
                                 this.SendName(port, "virtio-" + port);
                                 this.SendEvent(port, VIRTIO_CONSOLE_PORT_OPEN, 1);
-
                                 break;
                             case VIRTIO_CONSOLE_PORT_OPEN:
                                 this.Ack(queue_id, bufchain);

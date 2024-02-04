@@ -964,7 +964,7 @@ CPU.prototype.init = function(settings, device_bus)
         }
         if(settings.virtio_console)
         {
-            this.devices.virtio_console = new VirtioConsole(this, device_bus);
+            this.devices.virtio_console = new VirtioConsole(this, device_bus, settings.virtio_console);
         }
 
         if(true)
