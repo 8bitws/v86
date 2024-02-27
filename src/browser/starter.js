@@ -1245,7 +1245,7 @@ V86.prototype.create_file = async function(file, data)
     }
     else
     {
-        return Promise.reject(new FileNotFoundError());
+        return Promise.reject(new FileNotFoundError(file+""));
     }
 };
 

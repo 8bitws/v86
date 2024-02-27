@@ -561,3 +561,13 @@ function ScreenAdapter(screen_container, bus)
 
     this.init();
 }
+
+// Closure Compiler's way of exporting
+if(typeof window !== "undefined")
+{
+    window["ScreenAdapter"] = ScreenAdapter;
+}
+else if(typeof module !== "undefined" && typeof module.exports !== "undefined")
+{
+    module.exports["ScreenAdapter"] = ScreenAdapter;
+}

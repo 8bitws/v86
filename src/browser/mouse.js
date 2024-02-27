@@ -295,3 +295,13 @@ function MouseAdapter(bus, screen_container)
         e.preventDefault();
     }
 }
+
+// Closure Compiler's way of exporting
+if(typeof window !== "undefined")
+{
+    window["MouseAdapter"] = MouseAdapter;
+}
+else if(typeof module !== "undefined" && typeof module.exports !== "undefined")
+{
+    module.exports["MouseAdapter"] = MouseAdapter;
+}
